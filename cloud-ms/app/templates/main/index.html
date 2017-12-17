@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}容器云管理系统{% endblock %}
+
+{% block inline_styles %}
+    <style type="text/css">
+        .middle {
+            text-align: center;
+            margin: auto;
+            width: 70%;
+        }
+        #content-header {
+            margin: 20px;
+        }
+        a {
+            cursor: pointer;
+        }
+        #pd {
+            text-align: right;
+            margin: 20px;
+        }
+        .input-addon {
+            width: 120px;
+        }
+        .input-group {
+            margin-bottom: 5px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="middle">
+        <div id="content-header">
+            <h1>容器云管理系统</h1>
+        </div>
+        <div id="content-body">
+            <div id="pd">
+                <a id="create_container">创建容器</a>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    container lists
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal fade" id="create_container_modal" tabindex="-1" role="dialog" aria-labelledby="ccml">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" \
+                        ><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="ccml">Create Container</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="container-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="input-group">
+                            <span class="input-group-addon"><div class="input-addon">Username</div></span>
+                            <input id="username" type="text" name='username' class="form-control" \
+                                   placeholder="Username" required \
+                                   data-msg-required='Please input the username!'>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><div class="input-addon" \
+                            >Container-name</div></span>
+                            <input id="containername" name="containername" type="text" \
+                                   class="form-control" placeholder="Container name" \
+                                   required data-msg-required='Please input the container name!'>
+                        </div>
+                    </form>
+                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save_create_container">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block plugin_scripts %}
+<script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+{% endblock  %}
+
+{% block inline_scripts %}
+    <script type="text/javascript">
+    $(function () {
+        $("#create_container").click(function () {
+            $("#create_container_modal").modal("show");
+        });
+        $("#container-form").validate({
+            errorPlacement: function (error, element) {
+                element.parents(".input-group").after(error);
+            }
+        });
+        $('#save_create_container').click(function () {
+            if ($("#container-form").valid()) {
+                $.ajax({
+                    url: "{{ url_for('main.create_container') }}",
+                    type: "post",
+                    data: $("#container-form").serialize(),
+                    success: function(data) {
+                        $("#create_container_modal").modal("hide");
+                    }
+                });
+
+            } else {
+                return;
+            }
+        });
+    });
+    </script>
+{% endblock %}
+
+

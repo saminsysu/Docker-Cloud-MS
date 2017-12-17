@@ -1,0 +1,12 @@
+{% extends "bootstrap/base.html" %}
+
+{% block styles %}
+    {{ super() }}
+    {% block inline_styles %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {% block inline_scripts %}{% endblock %}
+    {% block plugin_scripts %}{% endblock  %}
+{% endblock %}
