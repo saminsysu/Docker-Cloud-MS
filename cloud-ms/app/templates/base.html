@@ -1,12 +1,29 @@
 {% extends "bootstrap/base.html" %}
 
+{% block metas %}
+    {{ super() }}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+{% endblock metas %}
+
 {% block styles %}
     {{ super() }}
     {% block inline_styles %}{% endblock %}
+    {% block plugin_styles %}{% endblock %}
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
+    <script type="text/javascript">
+    // csrf protect
+    var csrftoken = $('meta[name=csrf-token]').attr('content');
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken)
+            }
+        }
+    });
+    </script>
     {% block inline_scripts %}{% endblock %}
     {% block plugin_scripts %}{% endblock  %}
 {% endblock %}

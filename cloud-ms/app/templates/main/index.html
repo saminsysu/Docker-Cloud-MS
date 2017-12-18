@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}容器云管理系统{% endblock %}
 
+{% block plugin_styles %}
+<link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/datatables.min.css') }}">
+{% endblock %}
+
 {% block inline_styles %}
     <style type="text/css">
         .middle {
@@ -27,6 +31,9 @@
         .error {
             color: red;
         }
+        .operetion {
+            padding-left: 4px;
+        }
     </style>
 
 {% endblock %}
@@ -42,19 +49,52 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    container lists
+                    <table id="containers_table" class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>container-name</th>
+                            <th>username</th>
+                            <th>ports</th>
+                            <th>status</th>
+                            <th>operations</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for container in containers %}
+                            <tr id="{{ container.id }}">
+                                <td>
+                                    {{ container.container_name }}
+                                </td>
+                                <td>
+                                    {{ container.username }}
+                                </td>
+                                <td>
+                                    {{ container.ports }}
+                                </td>
+                                <td>
+                                    status
+                                </td>
+                                <td>
+                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}', 'delete')"><span class="operetion glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}', 'stop')"><span class="operetion glyphicon glyphicon-stop" aria-hidden="true"></span></a>
+                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}', 'start')"><span class="operetion glyphicon glyphicon-play" aria-hidden="true"></span></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
     </div>
-    <div class="modal fade" id="create_container_modal" tabindex="-1" role="dialog" aria-labelledby="ccml">
+    <div class="modal fade" id="create_container_modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" \
                         ><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="ccml">Create Container</h4>
+                    <h4 class="modal-title">Create Container</h4>
                 </div>
                 <div class="modal-body">
                     <form id="container-form">
@@ -81,15 +121,44 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="operations_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" \
+                        ><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirm_operation">Confirm</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block plugin_scripts %}
 <script src="{{ url_for('static', filename='js/jquery.validate.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datatables.min.js') }}"></script>
 {% endblock  %}
 
 {% block inline_scripts %}
     <script type="text/javascript">
+    var containerId;
+    var operationType;
+    var DELETE = 'delete';
+    var STOP = 'stop';
+    var START = 'start';
     $(function () {
+        var containers_table = $("#containers_table").DataTable({
+                "aoColumns": [
+                    null, null, null, null, null
+                ],
+                "aaSorting": []
+            });
         $("#create_container").click(function () {
             $("#create_container_modal").modal("show");
         });
@@ -106,14 +175,49 @@
                     data: $("#container-form").serialize(),
                     success: function(data) {
                         $("#create_container_modal").modal("hide");
+                        $("#container-form")[0].reset();
+                        window.location.reload();
                     }
                 });
-
             } else {
                 return;
             }
         });
+        $('#confirm_operation').click(function () {
+            if (operationType == DELETE) {
+                type='delete';
+            } else {
+                type = 'post';
+            }
+            $.ajax({
+                    url: "{{ url_for('main.operate_container') }}",
+                    type: type,
+                    data: JSON.stringify({'container_id': containerId, 'operation_type': operationType}),
+                    contentType: "application/json",
+                    success: function(data) {
+                        $("#operations_modal").modal("hide");
+                        window.location.reload();
+                    }
+                });
+        });
     });
+    function operate_container(contain_id, container_name, operation) {
+        containerId = contain_id;
+        operationType = operation;
+        if (operation == DELETE) {
+            title = 'Delete Container';
+            body = 'Are you sure to delete the container: ' + container_name + '?';
+        } else if (operation == STOP) {
+            title = 'Stop Container';
+            body = 'Are you sure to stop the container: ' + container_name + '?';
+        } else if (operation == START) {
+            title = 'Start Container';
+            body = 'Are you sure to start the container: ' + container_name + '?';
+        }
+        $("#operations_modal").find(".modal-title").text(title);
+        $("#operations_modal").find(".modal-body").text(body);
+        $("#operations_modal").modal("show");
+    }
     </script>
 {% endblock %}
 

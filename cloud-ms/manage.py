@@ -1,5 +1,4 @@
 from flask_script import Manager, Shell
-from app import app
 import os, sys, logging, re
 
 logger = logging.getLogger(__name__)
@@ -7,7 +6,6 @@ logger = logging.getLogger(__name__)
 basedir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(basedir)
 sys.path.append(basedir)
-sys.path.append(os.path.join(basedir, '..'))
 
 env_file_path = os.path.join(basedir, '.env')
 if os.path.exists(env_file_path):
@@ -28,7 +26,17 @@ if os.path.exists(env_file_path):
         env[line[:index]] = line[index+1:]
     os.environ.update(env)
 
+from app import app, db
+from flask_migrate import Migrate, MigrateCommand
 manager = Manager(app)
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
+
+
+@manager.command
+def deploy():
+    from app import models
+    db.create_all()
 
 @manager.command
 def runserver():
