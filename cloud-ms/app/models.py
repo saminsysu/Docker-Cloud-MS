@@ -20,6 +20,7 @@ class Container(db.Model, IdMixin, TimestampMixin):
     username = db.Column(db.String(64), default='default')
     container_name = db.Column(db.String(64), default='default')
     ports = db.Column(db.String(128), default='default')
+    status = db.Column(db.String(64), default='default')
 
     def __repr__(self):
         return '<Container %r>' % self.container_name

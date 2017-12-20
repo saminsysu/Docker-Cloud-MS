@@ -72,12 +72,19 @@
                                     {{ container.ports }}
                                 </td>
                                 <td>
-                                    status
+                                    {{ container.status }}
                                 </td>
                                 <td>
-                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}', 'delete')"><span class="operetion glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}', 'stop')"><span class="operetion glyphicon glyphicon-stop" aria-hidden="true"></span></a>
-                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}', 'start')"><span class="operetion glyphicon glyphicon-play" aria-hidden="true"></span></a>
+                                    <a onclick="operate_container({{ container.id }}, '{{ container.container_name }}',
+                                            'delete')"><span class="operetion glyphicon glyphicon-trash"
+                                                             aria-hidden="true" style="color: #cc6363"></span></a>
+                                    <a onclick="operate_container({{ container.id }},
+                                            '{{ container.container_name }}', 'stop')">
+                                        <span class="operetion glyphicon glyphicon-stop"
+                                              aria-hidden="true" style="color: #675252"></span></a>
+                                    <a onclick="operate_container({{ container.id }},
+                                            '{{ container.container_name }}', 'start')">
+                                        <span class="operetion glyphicon glyphicon-play" aria-hidden="true"></span></a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -170,7 +177,7 @@
         $('#save_create_container').click(function () {
             if ($("#container-form").valid()) {
                 $.ajax({
-                    url: "{{ url_for('main.create_container') }}",
+                    url: "{{ url_for('main.operate_container') }}",
                     type: "post",
                     data: $("#container-form").serialize(),
                     success: function(data) {
@@ -192,7 +199,7 @@
             $.ajax({
                     url: "{{ url_for('main.operate_container') }}",
                     type: type,
-                    data: JSON.stringify({'container_id': containerId, 'operation_type': operationType}),
+                    data: JSON.stringify({'container_mid': containerId, 'operation_type': operationType}),
                     contentType: "application/json",
                     success: function(data) {
                         $("#operations_modal").modal("hide");

@@ -11,6 +11,9 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = get_env('SQLALCHEMY_DATABASE_URI')
 
+    #celery
+    CELERY_BROKER_URL = get_env('CELERY_BROKER_URL')
+
     @classmethod
     def init_app(cls, app):
         pass

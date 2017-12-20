@@ -32,6 +32,28 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
 
+from celery import Celery
+
+# add support for Flask’s application contexts and hooking it (celery application) up with the Flask configuration
+def make_celery(app):
+    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+    class ContextTask(TaskBase):
+        abstract = True
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+    celery.Task = ContextTask
+    return celery
+
+celery = make_celery(app)
+
+@manager.option('-l', '--loglevel', default='info', dest='loglevel', help='Log level')
+@manager.option('-c', '--concurrency', default=8, dest='concurrency', help='Concurrency')
+def worker(loglevel='info', concurrency=8):
+    argv = ['', '-l', loglevel, '-c', str(concurrency)]
+    celery.worker_main(argv=argv)
 
 @manager.command
 def deploy():
