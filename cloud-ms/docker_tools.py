@@ -36,9 +36,13 @@ def get_free_port():
 
 def get_free_ports():
     ports = {}
+    is_ssh_port = True
     for i in range(0, 5):
         port = get_free_port()
-        ports[port] = port
+        if is_ssh_port:
+            ports[port] = 22
+        else:
+            ports[port] = port
     return ports
 
 def ports_to_str(ports):
@@ -50,6 +54,8 @@ def ports_to_str(ports):
         else:
             first = False
         ports_str += str(h_p) + '->' + str(c_p)
+        if h_p == 22:
+            ports_str += '(used for ssh)'
     return ports_str
 
 # 当bind=True时，task对象会作为第一个参数自动传入
