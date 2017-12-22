@@ -45,7 +45,7 @@ def operate_container():
             # celery task
             docker_tools.operate_container.delay(container_mid=container.id, operation_type='create',
                                                  username=username,
-                                                 container_name=container_name, image="ubuntu:16.04",
+                                                 container_name=container_name, image="cloud-ms/ubuntu:16.04",
                                                  command="tail -f /dev/null", mounts=[])
 
             response['status'] = 'success'
