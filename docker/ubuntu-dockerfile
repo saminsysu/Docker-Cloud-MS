@@ -1,5 +1,10 @@
 FROM ubuntu:16.04
-RUN apt-get update
-RUN apt-get install openssh-server -y && \
-    apt-get install net-tools -y && \
-    apt-get install iputils-ping -y
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.bac
+COPY ./sources.list /etc/apt/sources.list
+RUN apt-get update \
+    && apt-get install -y \
+    openssh-server \
+    net-tools \
+    iputils-ping \
+    && mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bac
+COPY ./sshd_config /etc/ssh/

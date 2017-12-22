@@ -11,7 +11,7 @@ Docker Cloud Management System. Through this system, we can manage (create, dele
 
 ## 部署过程
 
-先安装docker、docker-compose和virtualenv，然后（当前目录为Docker-Cloud-MS）
+先安装rabbit-mq、docker、docker-compose和virtualenv，然后（当前目录为Docker-Cloud-MS）
 
 1. 使用virtualenv创建虚拟环境
 
@@ -30,7 +30,6 @@ Docker Cloud Management System. Through this system, we can manage (create, dele
     '''
     # 构造ubuntu镜像
     $ docker build -t cloud-ms/ubuntu:16.04 -f ubuntu-dockerfile .
-    # 构造好镜像后仍需修改/etc/ssh/sshd_config中的PermitRootLogin为yes并生成镜像cloud-ms/ubuntu:16.04
     # 启动mysql容器
     $ docker-compose -f docker-compose.yml -p cloud-ms-db up -d
     '''
