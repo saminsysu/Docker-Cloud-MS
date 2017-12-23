@@ -6,5 +6,6 @@ RUN apt-get update \
     openssh-server \
     net-tools \
     iputils-ping \
-    && mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bac
+    && mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bac \
+    && echo "root:admin" | chpasswd
 COPY ./sshd_config /etc/ssh/

@@ -82,7 +82,7 @@ def operate_container(self, container_mid=None, container_id=None, operation_typ
             container = docker_client.containers.get(container_id)
             container_name = container.name
         except:
-            logger.info("No such container %d" % container_id)
+            logger.info("No such container %s" % container_id)
     if container_mid:
         try:
             c = Container.query.filter_by(id=container_mid).first()
@@ -141,6 +141,6 @@ def operate_container(self, container_mid=None, container_id=None, operation_typ
             logger.error("Fail to stop %s" % container_name)
     else:
         logger.error("The operation type %s not known" % operation_type)
-    if status == 'fail':
-        self.retry()
+    # if status == 'fail':
+    #     self.retry()
 
