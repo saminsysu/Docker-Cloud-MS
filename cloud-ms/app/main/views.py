@@ -49,7 +49,7 @@ def operate_container():
             docker_tools.operate_container.delay(container_mid=container.id, operation_type='create',
                                                  username=username,
                                                  container_name=container_name, image="cloud-ms/ubuntu:16.04",
-                                                 command="/etc/init.d/ssh start && bash", mounts=[])
+                                                 mounts=[])
 
             response['status'] = 'success'
             response['data'] = {

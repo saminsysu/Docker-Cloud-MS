@@ -9,3 +9,5 @@ RUN apt-get update \
     && mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bac \
     && echo "root:admin" | chpasswd
 COPY ./sshd_config /etc/ssh/
+COPY ./start.sh /
+CMD ["sh", "/start.sh"]
