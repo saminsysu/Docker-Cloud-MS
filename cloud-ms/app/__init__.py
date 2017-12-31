@@ -4,7 +4,7 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from config import config
-import os
+import os, logging, logging.config
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
@@ -21,6 +21,8 @@ def create_app(config_name):
 	csrf.init_app(app)
 	db.init_app(app)
 
+	# init logging
+	logging.config.fileConfig(app.config['LOG_CONFIG'])
 	from .main import main as main_blueprint
 	app.register_blueprint(main_blueprint)
 

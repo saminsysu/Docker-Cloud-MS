@@ -2,3 +2,4 @@
 .idea/
 *.pyc
 mysql-data
+cloud-ms/log/*

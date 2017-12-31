@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from flask_script import Manager, Shell
+from flask_script import Manager
 import os, sys, logging, re
 
 logger = logging.getLogger(__name__)

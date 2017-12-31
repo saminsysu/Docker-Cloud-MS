@@ -8,7 +8,7 @@ from celery import current_app as celery
 from app import db
 from app.models import Container
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("docker")
 
 def get_client():
     try:

@@ -3,6 +3,8 @@
 
 import os
 
+basedir = os.path.dirname(os.path.abspath(__file__))
+
 def get_env(key):
     return os.environ.get(key, None)
 
@@ -16,6 +18,9 @@ class Config:
 
     #celery
     CELERY_BROKER_URL = get_env('CELERY_BROKER_URL')
+
+    # logging config
+    LOG_CONFIG = os.path.join(basedir, 'etc', 'logging.ini')
 
     @classmethod
     def init_app(cls, app):
