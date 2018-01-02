@@ -39,8 +39,12 @@ from celery import Celery
 
 # add support for Flask’s application contexts and hooking it (celery application) up with the Flask configuration
 def make_celery(app):
-    celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'])
-    celery.conf.update(app.config)
+    celery = Celery()
+    # 两种配置方式都可以, 当使用current_app当当前没有app时，会使用
+    # DEFAULT_CONFIG_MODULE = 'celeryconfig' os.environ.get('CELERY_CONFIG_MODULE', DEFAULT_CONFIG_MODULE)来获取
+    # 配置模块，因而还是celery.config_from_object('celeryconfig')这种方式比较合理
+    # celery.config_from_object('config:CeleryConfig')
+    celery.config_from_object('celeryconfig')
     TaskBase = celery.Task
     class ContextTask(TaskBase):
         abstract = True
@@ -54,8 +58,11 @@ celery = make_celery(app)
 
 @manager.option('-l', '--loglevel', default='info', dest='loglevel', help='Log level')
 @manager.option('-c', '--concurrency', default=8, dest='concurrency', help='Concurrency')
-def worker(loglevel='info', concurrency=8):
-    argv = ['', '-l', loglevel, '-c', str(concurrency)]
+@manager.option('-Q', '--queues', default='celery', dest='queues', help='Queues')
+@manager.option('-n', '--hostname', default='celery', dest='hostname', help='Hostname')
+def worker(loglevel, concurrency, queues, hostname):
+    argv = ['', '-l', loglevel, '-c', str(concurrency), '-Q', queues, '-n', hostname]
+    # conf=celery.conf
     celery.worker_main(argv=argv)
 
 @manager.command

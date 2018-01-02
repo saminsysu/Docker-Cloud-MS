@@ -60,7 +60,7 @@ def ports_to_str(ports):
     return ports_str
 
 # 当bind=True时，task对象会作为第一个参数自动传入
-@celery.task(bind=True, name='operate_container', max_retries=3, default_retry_delay=2)
+@celery.task(bind=True, name='docker_tools.operate_container', max_retries=3, default_retry_delay=2)
 def operate_container(self, container_mid=None, container_id=None, operation_type=None, \
                       username=None, container_name=None, image=None, command=None, mounts=[]):
     '''
@@ -144,3 +144,17 @@ def operate_container(self, container_mid=None, container_id=None, operation_typ
     # if status == 'fail':
     #     self.retry()
 
+@celery.task(bind=True, name='docker_tools.task1', max_retries=3, default_retry_delay=2)
+def task1(self):
+    for i in range(3):
+        print("celery in processing task1")
+
+@celery.task(bind=True, name='docker_tools.task2', max_retries=3, default_retry_delay=2)
+def task2(self):
+    for i in range(3):
+        print("celery in processing task2")
+
+@celery.task(bind=True, name='docker_tools.task3', max_retries=3, default_retry_delay=2)
+def task3(self):
+    for i in range(3):
+        print("celery in processing task3")
