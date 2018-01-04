@@ -7,4 +7,7 @@ while True:
     docker_tools.task2.apply_async()
     # task3 to queue-default
     docker_tools.task1.apply_async()
+    # topic task
+    docker_tools.task4.apply_async()
+    docker_tools.task5.apply_async()
     time.sleep(2)

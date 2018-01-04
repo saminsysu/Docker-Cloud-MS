@@ -158,3 +158,13 @@ def task2(self):
 def task3(self):
     for i in range(3):
         print("celery in processing task3")
+
+@celery.task(bind=True, name='docker_tools.task4', max_retries=3, default_retry_delay=2)
+def task4(self):
+    for i in range(3):
+        print("celery in processing task4")
+
+@celery.task(bind=True, name='docker_tools.task5', max_retries=3, default_retry_delay=2)
+def task5(self):
+    for i in range(3):
+        print("celery in processing task5")
