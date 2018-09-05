@@ -17,6 +17,7 @@ task_queues = (
 
 # 这里没有指定exchange而是指定queue是因为celery会自动帮你根据task_queues中queue的定义查找对应的exchange，最终还是根据exchange和
 # routing_key去路由task，再者，有些中间件没有定义exchange (比如redis)，所以这里定义queue会更通用
+# 除了定义task_routes可以路由task，通过apply_async发送信息时指定queue也可以有效路由
 task_routes = {
     'docker_tools.operate_container': {
         'queue': 'queue_1',

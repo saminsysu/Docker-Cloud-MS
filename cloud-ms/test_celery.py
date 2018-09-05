@@ -9,5 +9,5 @@ while True:
     docker_tools.task1.apply_async()
     # topic task
     docker_tools.task4.apply_async()
-    docker_tools.task5.apply_async()
+    docker_tools.task5.apply_async() # 或 docker_tools.task5.apply_async(queue="queue_5") 可以达到同样的效果
     time.sleep(2)
